@@ -96,7 +96,7 @@ def Test(dataset, Recmodel, epoch, w=None, multicore=0):
         groundTrue_list = []
         # auc_record = []
         # ratings = []
-        total_batch = len(users) // u_batch_size + 1
+        total_batch = int(np.ceil(len(users) // u_batch_size))
         for batch_users in utils.minibatch(users, batch_size=u_batch_size):
             allPos = dataset.getUserPosItems(batch_users)
             groundTrue = [testDict[u] for u in batch_users]
