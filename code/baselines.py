@@ -101,9 +101,7 @@ class baseLineModel():
                 for range_i, items in enumerate(allPos):
                     exclude_index.extend([range_i] * len(items))
                     exclude_items.extend(items)
-                for i in exclude_index:
-                    for j in exclude_items:
-                        rating[i, j]= -(1 << 10)
+                rating[exclude_index, exclude_items] = -(1 << 10)
                 _, rating_K = torch.topk(rating, k=max_K)
                 rating = rating.cpu().numpy()
                 # aucs = [
@@ -194,10 +192,10 @@ class baseLineModel():
         data_test_surprise = data_test_surprise.build_full_trainset().build_testset()
         self.model.fit(data_train_surprise)
         predictions = self.model.test(data_test_surprise)
-        precisions, recalls = self.precision_recall_at_k(predictions, k=20, threshold=3.5)
+        #precisions, recalls = self.precision_recall_at_k(predictions, k=20, threshold=3.5)
         # Precision and recall can then be averaged over all users
-        print("Precision: "+str(sum(prec for prec in precisions.values()) / len(precisions)))
-        print("Recall: "+str(sum(rec for rec in recalls.values()) / len(recalls)))
+        #print("Precision: "+str(sum(prec for prec in precisions.values()) / len(precisions)))
+        #print("Recall: "+str(sum(rec for rec in recalls.values()) / len(recalls)))
         self.Test(dataset, self.model, world.config['multicore'])
 
 
