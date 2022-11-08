@@ -233,6 +233,7 @@ class Loader(BasicDataset):
         train_file = path + '/train.txt'
         test_file = path + '/test.txt'
         self.path = path
+        self.genre_hot = torch.load(os.path.join(path, "genres_hot.pt"))
         trainUniqueUsers, trainItem, trainUser = [], [], []
         testUniqueUsers, testItem, testUser = [], [], []
         self.traindataSize = 0

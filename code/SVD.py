@@ -59,7 +59,6 @@ def Test(dataset, model, multicore=0):
             batch_users_gpu = torch.Tensor(batch_users).long()
             batch_users_gpu = batch_users_gpu.to(world.device)
 
-            #rating = model.getUsersRating(batch_users_gpu)
             rating = torch.zeros((len(batch_users_gpu), dataset.UserItemNet.shape[1]))
             for i in range(len(batch_users)):
                 for j in range(dataset.UserItemNet.shape[1]):
@@ -72,13 +71,6 @@ def Test(dataset, model, multicore=0):
                 exclude_items.extend(items)
             rating[exclude_index, exclude_items] = -(1 << 10)
             _, rating_K = torch.topk(rating, k=max_K)
-            rating = rating.cpu().numpy()
-            # aucs = [
-            #         utils.AUC(rating[i],
-            #                   dataset,
-            #                   test_data) for i, test_data in enumerate(groundTrue)
-            #     ]
-            # auc_record.extend(aucs)
             del rating
             users_list.append(batch_users)
             rating_list.append(rating_K.cpu())
@@ -91,7 +83,6 @@ def Test(dataset, model, multicore=0):
             pre_results = []
             for x in X:
                 pre_results.append(test_one_batch(x))
-        scale = float(u_batch_size / len(users))
         for result in pre_results:
             results['recall'] += result['recall']
             results['precision'] += result['precision']
@@ -121,11 +112,6 @@ data_test_surprise = Dataset.load_from_df(ratings_df_test, reader)
 data_test_surprise = data_test_surprise.build_full_trainset().build_testset()
 model = SVD()
 model.fit(data_train_surprise)
-#predictions = model.test(data_test_surprise)
-#precisions, recalls = precision_recall_at_k(predictions, k=20, threshold=3.5)
-# Precision and recall can then be averaged over all users
-#print(sum(prec for prec in precisions.values()) / len(precisions))
-#print(sum(rec for rec in recalls.values()) / len(recalls))
 Test(dataset, model, world.config['multicore'])
 
 #https://surprise.readthedocs.io/en/stable/FAQ.html?highlight=recall#how-to-compute-precision-k-and-recall-k

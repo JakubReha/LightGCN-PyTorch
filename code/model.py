@@ -9,6 +9,7 @@ Define models here
 """
 import world
 import torch
+import dataloader
 from dataloader import BasicDataset
 from torch import nn
 import numpy as np
@@ -78,6 +79,7 @@ class PureMF(BasicModel):
         users_emb = self.embedding_user(users)
         items_emb = self.embedding_item(items)
         scores = torch.sum(users_emb*items_emb, dim=1)
+        print("wrong")
         return self.f(scores)
 
 class LightGCN(BasicModel):
@@ -100,6 +102,7 @@ class LightGCN(BasicModel):
             num_embeddings=self.num_users, embedding_dim=self.latent_dim)
         self.embedding_item = torch.nn.Embedding(
             num_embeddings=self.num_items, embedding_dim=self.latent_dim)
+        self.cat_embedding = torch.nn.Linear(20, self.latent_dim)
         if self.config['pretrain'] == 0:
 #             nn.init.xavier_uniform_(self.embedding_user.weight, gain=1)
 #             nn.init.xavier_uniform_(self.embedding_item.weight, gain=1)
@@ -143,6 +146,7 @@ class LightGCN(BasicModel):
         """       
         users_emb = self.embedding_user.weight
         items_emb = self.embedding_item.weight
+        items_emb = items_emb + self.cat_embedding(self.dataset.genre_hot)
         all_emb = torch.cat([users_emb, items_emb])
         #   torch.split(all_emb , [self.num_users, self.num_items])
         embs = [all_emb]
@@ -191,6 +195,7 @@ class LightGCN(BasicModel):
     def bpr_loss(self, users, pos, neg):
         (users_emb, pos_emb, neg_emb, 
         userEmb0,  posEmb0, negEmb0) = self.getEmbedding(users.long(), pos.long(), neg.long())
+
         reg_loss = (1/2)*(userEmb0.norm(2).pow(2) + 
                          posEmb0.norm(2).pow(2)  +
                          negEmb0.norm(2).pow(2))/float(len(users))
@@ -207,9 +212,10 @@ class LightGCN(BasicModel):
         # compute embedding
         all_users, all_items = self.computer()
         # print('forward')
+        print("correct")
         #all_users, all_items = self.computer()
         users_emb = all_users[users]
-        items_emb = all_items[items]
+        items_emb = all_items[items] # + self.dataset.genre_hot[items]
         inner_pro = torch.mul(users_emb, items_emb)
-        gamma     = torch.sum(inner_pro, dim=1)
+        gamma = torch.sum(inner_pro, dim=1)
         return gamma
