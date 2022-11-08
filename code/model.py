@@ -102,7 +102,8 @@ class LightGCN(BasicModel):
             num_embeddings=self.num_users, embedding_dim=self.latent_dim)
         self.embedding_item = torch.nn.Embedding(
             num_embeddings=self.num_items, embedding_dim=self.latent_dim)
-        self.cat_embedding = torch.nn.Linear(20, self.latent_dim)
+        if self.config["genre"]:
+            self.cat_embedding = torch.nn.Linear(20, self.latent_dim)
         if self.config['pretrain'] == 0:
 #             nn.init.xavier_uniform_(self.embedding_user.weight, gain=1)
 #             nn.init.xavier_uniform_(self.embedding_item.weight, gain=1)
@@ -146,7 +147,8 @@ class LightGCN(BasicModel):
         """       
         users_emb = self.embedding_user.weight
         items_emb = self.embedding_item.weight
-        items_emb = items_emb + self.cat_embedding(self.dataset.genre_hot)
+        if self.config["genre"]:
+            items_emb = items_emb + self.cat_embedding(self.dataset.genre_hot)
         all_emb = torch.cat([users_emb, items_emb])
         #   torch.split(all_emb , [self.num_users, self.num_items])
         embs = [all_emb]
