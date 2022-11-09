@@ -1,6 +1,3 @@
-# Our README
-*for the original README scroll down*
-
 ### Dataset
 We are using the Movie Lens Small Dataset. This dataset is retrived from <https://grouplens.org/datasets/movielens/> and is preprocessed with the file `ml-latest-small.py`.
 
