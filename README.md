@@ -1,4 +1,4 @@
-#Our README
+# Our README
 *for the original README scroll down*
 
 We are testing the LightGCN on the Movie Lens small dataset. This dataset is preprocessed with the file `ml-latest-small.py`.
