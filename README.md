@@ -17,7 +17,7 @@ For training with movie categories use:
 
 
 ___
-#Original READdME
+# Original README
 #### Update
 
 2020-09:
