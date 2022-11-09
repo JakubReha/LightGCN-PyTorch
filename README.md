@@ -15,10 +15,13 @@ For training with movie categories, use:
 
 ### Baselines Experiment
 The baselines selected for experiment include KNN-based models with different similarity measures (Cosine Similarity, Pearson Similarity, Pearson-Baseline, and Mean Squared Difference), SVD and SVDpp.
-The process for executing the experiments have been encapsulated in 'baselines.py' and 'baseline_experiments.py'. To run the experiments, simply run 'baseline_experiments.py' with the following configuration:
-'--dataset="ml-latest-small" --topks="[20]" --recdim=64 --testbatch 12'
-The experiment result will be written into the directory '/data/baseline_results_ML'. 
-For details on the experiments (e.g. trainable parameters), please refer to the comments in 'baselines.py' and 'baseline_experiments.py'.
+
+The process for executing the experiments have been encapsulated in `baselines.py` and `baseline_experiments.py`. To run the experiments, simply run `baseline_experiments.py` with the following configuration:
+`--dataset="ml-latest-small" --topks="[20]" --recdim=64 --testbatch 12`
+
+The experiment result will be written into the directory `/data/baseline_results_ML`. 
+
+For details on the experiments (e.g. trainable parameters), please refer to the comments in `baselines.py` and `baseline_experiments.py`.
 
 ___
 # Original README
