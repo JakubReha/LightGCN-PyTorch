@@ -7,10 +7,10 @@ We perform experiments comparing the original LightGCN, LightGCN taking into acc
 ### LightGCN
 `python main.py --decay=1e-4 --lr=0.001 --layer=3 --seed=2020 --dataset="ml-latest-small" --topks="[20]" --recdim=64 --testbatch 61 --epochs 500`
 
-For training with number of edges proportial to the rating use:
+For training with ratings (number of edges proportional to the rating), use:
 `--multiplied`
 
-For training with movie categories use:
+For training with movie categories, use:
 `--genre`
 
 ### Baselines
