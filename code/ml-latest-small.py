@@ -6,7 +6,7 @@ import torch
 categories = {"Adventure": 0, "Horror":1, "Animation":2, "Children":3, "Comedy":4, "Fantasy":5, "Drama":6, "Romance":7,
               "Thriller":8, "Sci-Fi":9, "Mystery":10, "War":11, "Musical":12, "Crime":13, "Action":14, "IMAX":15,
               "Western":16, "Film-Noir":17, "Documentary":18, "(no genres listed)":19}
-data_path = "data/ml-latest-small/"
+data_path = "../data/ml-latest-small/"
 movies = pd.read_csv(os.path.join(data_path, "movies.csv"))
 df = pd.read_csv(os.path.join(data_path, "ratings.csv"))
 movies["movieId"] = movies["movieId"] - 1
