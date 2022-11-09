@@ -1,4 +1,23 @@
+#Our README
+*for the original README scroll down*
 
+We are testing the LightGCN on the Movie Lens small dataset. This dataset is preprocessed with the file `ml-latest-small.py`.
+
+We perform experiments comparing the original LightGCN, LightGCN taking into account the movie rating and LightGCN taking into account the category of each movie. We also evaluate a few baselines (SVD, SVDpp and KNN) taking into account the movie ratings.
+### LightGCN
+`python main.py --decay=1e-4 --lr=0.001 --layer=3 --seed=2020 --dataset="ml-latest-small" --topks="[20]" --recdim=64 --testbatch 61 --epochs 500`
+
+For training with number of edges proportial to the rating use:
+`--multiplied`
+
+For training with movie categories use:
+`--genre`
+
+### Baselines
+
+
+___
+#Original READdME
 #### Update
 
 2020-09:

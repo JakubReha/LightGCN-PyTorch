@@ -12,8 +12,6 @@ df = pd.read_csv(os.path.join(data_path, "ratings.csv"))
 movies["movieId"] = movies["movieId"] - 1
 df["userId"] = df["userId"] - 1
 df["movieId"] = df["movieId"] - 1
-#df = df.merge(movies, on="movieId")
-#df["genres"] = df["genres"].apply(lambda x: [categories[g] for g in x.split("|")])
 movies["genres"] = movies["genres"].apply(lambda x: [categories[g] for g in x.split("|")])
 movies = movies["genres"]
 movies.to_csv(os.path.join(data_path, "movie_embed.csv"))
