@@ -20,6 +20,9 @@ For Modified LightGCN training with ratings, add:
 For Modified LightGCN training with movie categories, add:
 `--genre`
 
+For Filtered Version of Modified LightGCN, add:
+`--filtered`
+
 Need to delete the `s_pre_sdj_mat.npz` after running to reinitialize the adjacency matrix.
 
 #### Baselines
