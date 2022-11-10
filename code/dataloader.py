@@ -230,13 +230,24 @@ class Loader(BasicDataset):
         self.mode = self.mode_dict['train']
         self.n_user = 0
         self.m_item = 0
-        if config["multiplied"]:
+        #if config["multiplied"]:
+        #    train_file = path + '/train_multiplied.txt'
+        #else:
+        #    train_file = path + '/train.txt'
+        #test_file = path + '/test.txt'
+        
+        if config["filtered"]:
+            train_file = path + '/train_filtered.txt' # when filtered, assume multiplied
+            test_file = path + '/test_filtered.txt'
+        elif config["multiplied"]:
             train_file = path + '/train_multiplied.txt'
+            test_file = path + '/test.txt'
         else:
             train_file = path + '/train.txt'
-        test_file = path + '/test.txt'
+            test_file = path + '/test.txt'
+            
         self.path = path
-        if config["genres"]:
+        if config["genre"]:
             self.genre_hot = torch.load(os.path.join(path, "genres_hot.pt"))
         trainUniqueUsers, trainItem, trainUser = [], [], []
         testUniqueUsers, testItem, testUser = [], [], []
