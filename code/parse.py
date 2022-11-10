@@ -45,4 +45,5 @@ def parse_args():
     parser.add_argument('--model', type=str, default='lgn', help='rec-model, support [mf, lgn]')
     parser.add_argument('--genre', action="store_true")
     parser.add_argument('--multiplied', action="store_true")
+    parser.add_argument('--filtered', action="store_true")
     return parser.parse_args()
