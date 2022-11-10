@@ -20,7 +20,7 @@ For Modified LightGCN training with ratings, add:
 For Modified LightGCN training with movie categories, add:
 `--genre`
 
-Need to delete the `s_pre_sdj_mat.npz` after running to reinitialize the matrix.
+Need to delete the `s_pre_sdj_mat.npz` after running to reinitialize the adjacency matrix.
 
 #### Baselines
 The process for executing the experiments have been encapsulated in `baselines.py` and `baseline_experiments.py`. To run the experiments, simply run `baseline_experiments.py` with the following configuration: `--dataset="ml-latest-small" --topks="[20]" --recdim=64 --testbatch 12`
