@@ -10,18 +10,19 @@ import torch
 from register import dataset
 
 CORES = multiprocessing.cpu_count() // 2
+data_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'ml-latest-small')
 
 """
 Static method to generate df_train and df_test.
 Will be called upon when related files are not detected in directory.
 """
 def train_test_generate():
-    if os.path.exists("../data/ml-latest-small/df_train.csv") and os.path.exists("../data/ml-latest-small/df_test.csv"):
-        df_train = pd.read_csv("../data/ml-latest-small/df_train.csv")
-        df_test = pd.read_csv("../data/ml-latest-small/df_test.csv")
+    if os.path.exists(os.path.join(data_path, "df_train.csv")) and os.path.exists(os.path.join(data_path, "df_test.csv")):
+        df_train = pd.read_csv(os.path.join(data_path, "df_train.csv"))
+        df_test = pd.read_csv(os.path.join(data_path, "df_test.csv"))
         return df_train, df_test
-    movies = pd.read_csv("../data/ml-latest-small/movies.csv")
-    df = pd.read_csv("../data/ml-latest-small/ratings.csv")
+    movies = pd.read_csv(os.path.join(data_path, "movies.csv"))
+    df = pd.read_csv(os.path.join(data_path, "ratings.csv"))
     movies["movieId"] = movies["movieId"] - 1
     df["userId"] = df["userId"] - 1
     df["movieId"] = df["movieId"] - 1
@@ -38,12 +39,12 @@ def train_test_generate():
 """
 The tailored engine for all baseline models that we use. 
 Only supports models imported from scikit-surprise package.
-To run exxperiments with baseline models, run baseline_experiments.py
+To run experiments with baseline models, run baseline_experiments.py
 """
 class baseLineModel():
 
     def __init__(self, model):
-        self.model = model;
+        self.model = model
         self.df_train, self.df_test = train_test_generate()
 
     def test_one_batch(self, X):

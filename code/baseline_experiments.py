@@ -1,5 +1,6 @@
 from baselines import baseLineModel
 from surprise import KNNBasic, SVD, SVDpp
+import os
 
 """
 The experimenting process for our baseline models.
@@ -10,7 +11,7 @@ The included baseline models include:
     SVD and SVDpp
 
 """
-
+data_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'baseline_results_ML')
 
 def SVD_train(pp=True):
     """
@@ -42,7 +43,7 @@ def SVD_train(pp=True):
     else:
         suffix = ""
 
-    with open('../data/baseline_results_ML/SVD' + suffix + '.txt', 'w') as data:
+    with open(os.path.join(data_path, 'SVD' + suffix + '.txt', 'w')) as data:
         data.write(str(results))
     return results
 
@@ -72,7 +73,7 @@ def KNN_without_Baseline():
         results["recall"][sim] = res["recall"][0]
         results["ndcg"][sim] = res["ndcg"][0]
 
-    with open('../data/baseline_results_ML/KNN.txt', 'w') as data:
+    with open(os.path.join(data_path, 'KNN.txt', 'w')) as data:
         data.write(str(results))
     return results
 
@@ -116,7 +117,7 @@ def KNN_with_Baseline(sgd=True):
         suffix = "SGD"
     else:
         suffix = "ALS"
-    with open('../data/baseline_results_ML/KNN_Pearson_Baseline_' + suffix + '.txt', 'w') as data:
+    with open(os.path.join(data_path, 'KNN_Pearson_Baseline_' + suffix + '.txt', 'w')) as data:
         data.write(str(results))
     return results
 
