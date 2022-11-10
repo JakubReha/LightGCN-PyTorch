@@ -7,7 +7,7 @@ Specifically, we are using the Movie Lens Small Dataset. This dataset is retrive
 ### Experiments
 We modified the original LightGCN to incorporate the movies' rating by the users, as well as the movies' genre. We call this new model "Modified LightGCN". 
 We also implemented a few baselines (SVD, SVDpp and KNN) taking into account the movie ratings. The baselines selected for experiment include KNN-based models with different similarity measures (Cosine Similarity, Pearson Similarity, Pearson-Baseline, and Mean Squared Difference), SVD and SVDpp.
-We perform experiments comparing the original LightGCN, Modified LightGCN and baselines on the prediction task of Movie Lens Dataset. 
+We perform experiments comparing the original LightGCN, Modified LightGCN, filtered LightGCN (where we only consider giving movie recommendations to active users) and baselines on the prediction task of Movie Lens Dataset. 
 
 ### To Run the Codes
 #### LightGCN
