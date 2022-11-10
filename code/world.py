@@ -48,6 +48,7 @@ config['A_split'] = False
 config['bigdata'] = False
 config['multiplied'] = args.multiplied
 config['genre'] = args.genre
+config['filtered'] = args.filtered
 
 GPU = torch.cuda.is_available()
 device = torch.device('cuda' if GPU else "cpu")
