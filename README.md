@@ -2,7 +2,7 @@
 The project explores using the [LightGCN](https://arxiv.org/abs/2002.02126) model for movie recommendation. The repository was forked from [here](https://github.com/gusye1234/LightGCN-PyTorch).
 
 ### Dataset
-Specifically, we are using the Movie Lens Small Dataset. This dataset is retrived from <https://grouplens.org/datasets/movielens/> and is preprocessed with the file `ml-latest-small.py`.
+Specifically, we are using the Movie Lens Small Dataset. This dataset is retrived from <https://grouplens.org/datasets/movielens/> and is preprocessed with the file `ml-latest-small.py` and `ml-latest-small-new.py`.
 
 ### Experiments
 We modified the original LightGCN to incorporate the movies' rating by the users, as well as the movies' genre. We call this new model "Modified LightGCN". 
