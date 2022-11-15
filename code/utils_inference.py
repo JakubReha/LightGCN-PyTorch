@@ -212,7 +212,7 @@ class timer:
 
 # ====================Metrics==============================
 # =========================================================
-def RecallPrecision_ATk(test_data, r, k):
+def RecallPrecision_ATk(test_data, r, rat, ratings, k):
     """
     test_data should be a list? cause users may have different amount of pos items. shape (test_batch, k)
     pred_data : shape (test_batch, k) NOTE: pred_data should be pre-sorted
@@ -224,7 +224,10 @@ def RecallPrecision_ATk(test_data, r, k):
     recall_n = np.array([len(test_data[i]) for i in range(len(test_data))])
     #recall = right_pred / recall_n
     #precis = right_pred / precis_n
-    recall = np.sum(right_pred/recall_n)
+    nom = np.array([np.array(ratings[i])[rat[i]].sum() for i in range(len(ratings))])
+    denom = np.array([np.array(ratings[i]).sum() for i in range(len(test_data))])
+    recall = np.sum(nom / denom)
+    #recall = np.sum(right_pred/recall_n)
     precis = np.sum(right_pred)/precis_n
     return {'recall': recall, 'precision': precis}
 
@@ -274,13 +277,19 @@ def AUC(all_item_scores, dataset, test_data):
 
 def getLabel(test_data, pred_data):
     r = []
+    ratings_list = []
+    with open('ratings_sorted.pickle', 'rb') as handle:
+        ratings = pickle.load(handle)
+
     for i in range(len(test_data)):
         groundTrue = test_data[i]
         predictTopK = pred_data[i]
         pred = list(map(lambda x: x in groundTrue, predictTopK))
+        rat = np.array([True if a in predictTopK else False for a in groundTrue])
         pred = np.array(pred).astype("float")
+        ratings_list.append(rat)
         r.append(pred)
-    return np.array(r).astype('float')
+    return np.array(r).astype('float'), np.array(ratings_list), ratings
 
 # ====================end Metrics=============================
 # =========================================================

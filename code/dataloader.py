@@ -228,6 +228,7 @@ class Loader(BasicDataset):
         self.folds = config['A_n_fold']
         self.mode_dict = {'train': 0, "test": 1}
         self.mode = self.mode_dict['train']
+        self.ratings = sp.load_npz("ratings.npz")
         self.n_user = 0
         self.m_item = 0
         #if config["multiplied"]:
@@ -237,14 +238,14 @@ class Loader(BasicDataset):
         #test_file = path + '/test.txt'
         
         if config["filtered"]:
-            train_file = path + '/train_filtered.txt' # when filtered, assume multiplied
+            train_file = path + '/train.txt' # when filtered, assume multiplied
             test_file = path + '/test_filtered.txt'
         elif config["multiplied"]:
             train_file = path + '/train_multiplied.txt'
-            test_file = path + '/test.txt'
+            test_file = path + '/test_sorted.txt'
         else:
             train_file = path + '/train.txt'
-            test_file = path + '/test.txt'
+            test_file = path + '/test_sorted.txt'
             
         self.path = path
         if config["genre"]:
@@ -352,7 +353,7 @@ class Loader(BasicDataset):
                 pre_adj_mat = sp.load_npz(self.path + '/s_pre_adj_mat.npz')
                 print("successfully loaded...")
                 norm_adj = pre_adj_mat
-            except :
+            except:
                 print("generating adjacency matrix")
                 s = time()
                 adj_mat = sp.dok_matrix((self.n_users + self.m_items, self.n_users + self.m_items), dtype=np.float32)
@@ -413,7 +414,11 @@ class Loader(BasicDataset):
     def getUserPosItems(self, users):
         posItems = []
         for user in users:
-            posItems.append(self.UserItemNet[user].nonzero()[1])
+            posItems_user = []
+            for i in self.UserItemNet[user].nonzero()[1]:
+                for j in range(int(self.UserItemNet[user, i])):
+                    posItems_user.append(i)
+            posItems.append(posItems_user)
         return posItems
 
     # def getUserNegItems(self, users):

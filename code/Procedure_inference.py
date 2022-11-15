@@ -9,10 +9,10 @@ Design training and test process
 import world
 import numpy as np
 import torch
-import utils
+import utils_inference as utils
 import dataloader
 from pprint import pprint
-from utils import timer
+from utils_inference import timer
 from time import time
 from tqdm import tqdm
 import model
@@ -21,7 +21,6 @@ import register
 from register import dataset
 from sklearn.metrics import roc_auc_score
 
-
 CORES = multiprocessing.cpu_count() // 2
 
 
@@ -29,7 +28,7 @@ def BPR_train_original(dataset, recommend_model, loss_class, epoch, neg_k=1, w=N
     Recmodel = recommend_model
     Recmodel.train()
     bpr: utils.BPRLoss = loss_class
-    
+
     with timer(name="Sample"):
         S = utils.UniformSample_original(dataset)
     users = torch.Tensor(S[:, 0]).long()
@@ -57,23 +56,23 @@ def BPR_train_original(dataset, recommend_model, loss_class, epoch, neg_k=1, w=N
     time_info = timer.dict()
     timer.zero()
     return f"loss{aver_loss:.3f}-{time_info}"
-    
-    
+
+
 def test_one_batch(X):
     sorted_items = X[0].numpy()
     groundTrue = X[1]
-    r = utils.getLabel(groundTrue, sorted_items)
+    r, rat, ratings = utils.getLabel(groundTrue, sorted_items)
     pre, recall, ndcg = [], [], []
     for k in world.topks:
-        ret = utils.RecallPrecision_ATk(groundTrue, r, k)
+        ret = utils.RecallPrecision_ATk(groundTrue, r, rat, ratings, k)
         pre.append(ret['precision'])
         recall.append(ret['recall'])
-        ndcg.append(utils.NDCGatK_r(groundTrue,r,k))
-    return {'recall':np.array(recall), 
-            'precision':np.array(pre), 
-            'ndcg':np.array(ndcg)}
-        
-            
+        ndcg.append(utils.NDCGatK_r(groundTrue, r, k))
+    return {'recall': np.array(recall),
+            'precision': np.array(pre),
+            'ndcg': np.array(ndcg)}
+
+
 def Test(dataset, Recmodel, epoch, w=None, multicore=0):
     u_batch_size = world.config['test_u_batch_size']
     dataset: utils.BasicDataset
@@ -106,18 +105,18 @@ def Test(dataset, Recmodel, epoch, w=None, multicore=0):
             batch_users_gpu = batch_users_gpu.to(world.device)
 
             rating = Recmodel.getUsersRating(batch_users_gpu)
-            #rating = rating.cpu()
+            # rating = rating.cpu()
             exclude_index = []
             exclude_items = []
             for range_i, items in enumerate(allPos):
                 exclude_index.extend([range_i] * len(items))
                 exclude_items.extend(items)
-            rating[exclude_index, exclude_items] = -(1<<10)
+            rating[exclude_index, exclude_items] = -(1 << 10)
             _, rating_K = torch.topk(rating, k=max_K)
             rating = rating.cpu().numpy()
-            # aucs = [ 
+            # aucs = [
             #         utils.AUC(rating[i],
-            #                   dataset, 
+            #                   dataset,
             #                   test_data) for i, test_data in enumerate(groundTrue)
             #     ]
             # auc_record.extend(aucs)
@@ -133,7 +132,7 @@ def Test(dataset, Recmodel, epoch, w=None, multicore=0):
             pre_results = []
             for x in X:
                 pre_results.append(test_one_batch(x))
-        scale = float(u_batch_size/len(users))
+        scale = float(u_batch_size / len(users))
         for result in pre_results:
             results['recall'] += result['recall']
             results['precision'] += result['precision']
@@ -153,6 +152,7 @@ def Test(dataset, Recmodel, epoch, w=None, multicore=0):
             pool.close()
         print(results)
         return results
+
 
 if __name__ == "__main__":
     model = torch.load("checkpoints/lgn-ml-latest-small-3-64_original_best.pth.tar")

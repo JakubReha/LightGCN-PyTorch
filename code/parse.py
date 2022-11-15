@@ -11,7 +11,7 @@ import argparse
 def parse_args():
     parser = argparse.ArgumentParser(description="Go lightGCN")
     parser.add_argument('--bpr_batch', type=int,default=2048,
-                        help="the batch size for bpr loss training procedure")
+                        help="the batch size for bpr train loss training procedure")
     parser.add_argument('--recdim', type=int,default=64,
                         help="the embedding size of lightGCN")
     parser.add_argument('--layer', type=int,default=3,
@@ -23,7 +23,7 @@ def parse_args():
     parser.add_argument('--dropout', type=int,default=0,
                         help="using the dropout or not")
     parser.add_argument('--keepprob', type=float,default=0.6,
-                        help="the batch size for bpr loss training procedure")
+                        help="the batch size for bpr train loss training procedure")
     parser.add_argument('--a_fold', type=int,default=100,
                         help="the fold num used to split large adj matrix, like gowalla")
     parser.add_argument('--testbatch', type=int,default=61,
@@ -46,4 +46,5 @@ def parse_args():
     parser.add_argument('--genre', action="store_true")
     parser.add_argument('--multiplied', action="store_true")
     parser.add_argument('--filtered', action="store_true")
+    parser.add_argument('--adaptive', action="store_true")
     return parser.parse_args()

@@ -32,7 +32,7 @@ class PairWiseModel(BasicModel):
             pos: positive items for corresponding users
             neg: negative items for corresponding users
         Return:
-            (log-loss, l2-loss)
+            (log-train loss, l2-train loss)
         """
         raise NotImplementedError
     
@@ -104,6 +104,8 @@ class LightGCN(BasicModel):
             num_embeddings=self.num_items, embedding_dim=self.latent_dim)
         if self.config["genre"]:
             self.cat_embedding = torch.nn.Linear(20, self.latent_dim)
+        if self.config["adaptive"]:
+            self.adapt = torch.nn.Linear(self.latent_dim*(self.n_layers + 1), self.n_layers + 1)
         if self.config['pretrain'] == 0:
 #             nn.init.xavier_uniform_(self.embedding_user.weight, gain=1)
 #             nn.init.xavier_uniform_(self.embedding_item.weight, gain=1)
@@ -173,7 +175,12 @@ class LightGCN(BasicModel):
             embs.append(all_emb)
         embs = torch.stack(embs, dim=1)
         #print(embs.size())
-        light_out = torch.mean(embs, dim=1)
+        if self.config["adaptive"]:
+            weights = self.adapt(embs.reshape(embs.shape[0], -1)).reshape(embs.shape[0], -1, 1)
+            weights = torch.softmax(weights, 1)
+            light_out = (weights * embs).sum(axis=1)
+        else:
+            light_out = torch.mean(embs, dim=1)
         users, items = torch.split(light_out, [self.num_users, self.num_items])
         return users, items
     
@@ -195,14 +202,15 @@ class LightGCN(BasicModel):
         return users_emb, pos_emb, neg_emb, users_emb_ego, pos_emb_ego, neg_emb_ego
     
     def bpr_loss(self, users, pos, neg):
+        pos_weights = torch.from_numpy(self.dataset.ratings[users.numpy().astype(int), pos.numpy().astype(int)]).T
         (users_emb, pos_emb, neg_emb, 
         userEmb0,  posEmb0, negEmb0) = self.getEmbedding(users.long(), pos.long(), neg.long())
 
         reg_loss = (1/2)*(userEmb0.norm(2).pow(2) + 
-                         posEmb0.norm(2).pow(2)  +
+                         posEmb0.norm(2).pow(2) +
                          negEmb0.norm(2).pow(2))/float(len(users))
         pos_scores = torch.mul(users_emb, pos_emb)
-        pos_scores = torch.sum(pos_scores, dim=1)
+        pos_scores = torch.sum(pos_scores, dim=1)#*pos_weights.squeeze()
         neg_scores = torch.mul(users_emb, neg_emb)
         neg_scores = torch.sum(neg_scores, dim=1)
         
