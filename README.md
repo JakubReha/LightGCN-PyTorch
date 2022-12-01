@@ -20,9 +20,6 @@ For Modified LightGCN training with ratings, add:
 For Modified LightGCN training with movie categories, add:
 `--genre`
 
-<sup>If you want to train on a reduced dataset (users, who watched less than 100 movies. around 50% of all users) use:
-`--filtered`</sub>
-
 Need to delete the `s_pre_sdj_mat.npz` after running to reinitialize the adjacency matrix.
 
 #### Baselines
